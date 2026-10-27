@@ -5,8 +5,8 @@
     --muted: #7b8780;
     --border: #e1e7e3;
 
-    --primary: #287a59;
-    --primary-light: #e8f3ed;
+    --primary: #2563eb;
+    --primary-light: #eaf2ff;
 
     --water: #3d9fc2;
     --energy: #d19b2d;
@@ -37,8 +37,8 @@ body.dark {
     --muted: #a1ada5;
     --border: #354039;
 
-    --primary: #61b48b;
-    --primary-light: #293d32;
+    --primary: #93c5fd;
+    --primary-light: #1e293b;
 
     --shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
 }
@@ -246,7 +246,7 @@ h1 {
 
     border-radius: 14px;
 
-    background: #246d50;
+    background: #1d4ed8;
 
     color: white;
 
@@ -277,7 +277,7 @@ h1 {
 }
 
 .hero-label {
-    color: #c5dfd0;
+    color: #dbeafe;
 
     font-size: 8px;
 
@@ -293,7 +293,7 @@ h1 {
 .hero p {
     margin: 0;
 
-    color: #d8e9df;
+    color: #eff6ff;
 
     font-size: 11px;
 
