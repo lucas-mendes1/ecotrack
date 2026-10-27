@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>EcoTrack | Monitoramento Residencial</title>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <span class="logo-symbol">E</span>
+            <span>EcoTrack</span>
+        </div>
+
+        <div class="property">
+            <span class="property-title">Residência</span>
+            <strong>Minha casa</strong>
+            <small>Painel residencial</small>
+        </div>
+
+        <nav>
+
+            <span class="menu-title">MENU PRINCIPAL</span>
+
+            <a href="#dashboard" class="nav-link active">
+                Visão geral
+            </a>
+
+            <a href="#simulator" class="nav-link">
+                Simulador
+            </a>
+
+            <a href="#recommendations" class="nav-link">
+                Recomendações
+            </a>
+
+        </nav>
+
+        <div class="sidebar-footer">
+            <strong>EcoTrack</strong>
+            <span>Sistema demonstrativo</span>
+        </div>
+
+    </aside>
+
+    <main>
+
+        <header class="topbar">
+
+            <div>
+                <span class="breadcrumb">
+                    Painel / Visão geral
+                </span>
+
+                <h1>
+                    Monitoramento de consumo
+                </h1>
+            </div>
+
+            <button
+                id="themeButton"
+                class="theme-button"
+                type="button"
+                aria-label="Alternar tema">
+                Tema
+            </button>
+
+        </header>
+
+        <section class="hero" id="dashboard">
+
+            <div class="hero-content">
+
+                <span class="hero-label">
+                    MONITORAMENTO RESIDENCIAL
+                </span>
+
+                <h2>
+                    Analise e simule o consumo da residência
+                </h2>
+
+                <p>
+                    Ajuste os parâmetros abaixo para visualizar
+                    os indicadores atualizados em tempo real.
+                </p>
+
+            </div>
+
+        </section>
+
+        <section class="metrics-grid">
+
+            <article class="metric-card">
+
+                <div class="metric-header">
+                    <span class="metric-icon water">
+                        A
+                    </span>
+
+                    <span>
+                        Água
+                    </span>
+                </div>
+
+                <strong id="waterValue">
+                    12,4 m³
+                </strong>
+
+                <div class="progress">
+                    <span id="waterProgress"></span>
+                </div>
+
+                <small>
+                    Meta mensal: 10 m³
+                </small>
+
+            </article>
+
+            <article class="metric-card">
+
+                <div class="metric-header">
+                    <span class="metric-icon energy">
+                        E
+                    </span>
+
+                    <span>
+                        Energia
+                    </span>
+                </div>
+
+                <strong id="energyValue">
+                    185 kWh
+                </strong>
+
+                <div class="progress energy-progress">
+                    <span id="energyProgress"></span>
+                </div>
+
+                <small>
+                    Meta mensal: 150 kWh
+                </small>
+
+            </article>
+
+            <article class="metric-card">
+
+                <div class="metric-header">
+                    <span class="metric-icon cost">
+                        R$
+                    </span>
+
+                    <span>
+                        Custo estimado
+                    </span>
+                </div>
+
+                <strong id="costValue">
+                    R$ 216
+                </strong>
+
+                <div class="progress cost-progress">
+                    <span id="costProgress"></span>
+                </div>
+
+                <small>
+                    Água + energia
+                </small>
+
+            </article>
+
+        </section>
+
+        <section class="content-grid">
+
+            <section class="panel" id="simulator">
+
+                <div class="panel-header">
+
+                    <div>
+                        <h2>
+                            Simulador de consumo
+                        </h2>
+
+                        <p>
+                            Modifique os parâmetros da residência.
+                        </p>
+                    </div>
+
+                    <span class="status">
+                        ATUALIZAÇÃO AUTOMÁTICA
+                    </span>
+
+                </div>
+
+                <div class="control">
+
+                    <div class="control-header">
+
+                        <div>
+                            <strong>
+                                Consumo de água
+                            </strong>
+
+                            <small>
+                                Consumo mensal em metros cúbicos
+                            </small>
+                        </div>
+
+                        <output id="waterOutput">
+                            12,4 m³
+                        </output>
+
+                    </div>
+
+                    <input
+                        id="water"
+                        type="range"
+                        min="2"
+                        max="30"
+                        step="0.2"
+                        value="12.4">
+
+                    <div class="range-labels">
+                        <span>2 m³</span>
+                        <span>30 m³</span>
+                    </div>
+
+                </div>
+
+                <div class="control">
+
+                    <div class="control-header">
+
+                        <div>
+                            <strong>
+                                Consumo de energia
+                            </strong>
+
+                            <small>
+                                Consumo mensal em quilowatt-hora
+                            </small>
+                        </div>
+
+                        <output id="energyOutput">
+                            185 kWh
+                        </output>
+
+                    </div>
+
+                    <input
+                        id="energy"
+                        type="range"
+                        min="50"
+                        max="600"
+                        step="5"
+                        value="185">
+
+                    <div class="range-labels">
+                        <span>50 kWh</span>
+                        <span>600 kWh</span>
+                    </div>
+
+                </div>
+
+                <div class="control">
+
+                    <div class="control-header">
+
+                        <div>
+                            <strong>
+                                Número de moradores
+                            </strong>
+
+                            <small>
+                                Pessoas residentes no imóvel
+                            </small>
+                        </div>
+
+                        <output id="peopleOutput">
+                            3 pessoas
+                        </output>
+
+                    </div>
+
+                    <input
+                        id="people"
+                        type="range"
+                        min="1"
+                        max="8"
+                        step="1"
+                        value="3">
+
+                    <div class="range-labels">
+                        <span>1 pessoa</span>
+                        <span>8 pessoas</span>
+                    </div>
+
+                </div>
+
+                <div class="actions">
+
+                    <button
+                        id="resetButton"
+                        type="button"
+                        class="secondary-button">
+                        Restaurar valores
+                    </button>
+
+                    <button
+                        id="saveButton"
+                        type="button"
+                        class="primary-button">
+                        Salvar simulação
+                    </button>
+
+                </div>
+
+                <p
+                    id="message"
+                    class="message">
+                </p>
+
+            </section>
+
+            <section class="panel">
+
+                <div class="panel-header">
+
+                    <div>
+                        <h2>
+                            Índice de eficiência
+                        </h2>
+
+                        <p>
+                            Avaliação baseada no consumo por morador.
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="score-container">
+
+                    <div
+                        id="scoreCircle"
+                        class="score-circle">
+
+                        <div>
+                            <strong id="score">
+                                72
+                            </strong>
+
+                            <span>
+                                /100
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <div class="score-description">
+
+                        <h3 id="scoreTitle">
+                            Bom desempenho
+                        </h3>
+
+                        <p id="scoreDescription">
+                            Pequenos ajustes podem melhorar
+                            ainda mais a eficiência.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="separator"></div>
+
+                <div class="impact-item">
+
+                    <div>
+                        <strong>
+                            Água por pessoa/dia
+                        </strong>
+
+                        <small>
+                            Consumo estimado
+                        </small>
+                    </div>
+
+                    <strong id="waterPerPerson">
+                        138 L
+                    </strong>
+
+                </div>
+
+                <div class="impact-item">
+
+                    <div>
+                        <strong>
+                            Energia por pessoa/dia
+                        </strong>
+
+                        <small>
+                            Consumo estimado
+                        </small>
+                    </div>
+
+                    <strong id="energyPerPerson">
+                        2,1 kWh
+                    </strong>
+
+                </div>
+
+                <div
+                    id="recommendation"
+                    class="recommendation">
+
+                    Reduzir o consumo de água pode melhorar
+                    significativamente o índice de eficiência.
+
+                </div>
+
+            </section>
+
+        </section>
+
+        <section
+            class="recommendations"
+            id="recommendations">
+
+            <div class="panel-header">
+
+                <div>
+                    <h2>
+                        Recomendações
+                    </h2>
+
+                    <p>
+                        Medidas simples para reduzir o consumo.
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="recommendation-grid">
+
+                <article>
+
+                    <span class="recommendation-number">
+                        01
+                    </span>
+
+                    <h3>
+                        Reduzir o tempo de banho
+                    </h3>
+
+                    <p>
+                        Reduzir alguns minutos do banho pode
+                        diminuir significativamente o consumo
+                        mensal de água.
+                    </p>
+
+                </article>
+
+                <article>
+
+                    <span class="recommendation-number">
+                        02
+                    </span>
+
+                    <h3>
+                        Desligar equipamentos
+                    </h3>
+
+                    <p>
+                        Evite manter iluminação e equipamentos
+                        ligados quando não estiverem sendo utilizados.
+                    </p>
+
+                </article>
+
+                <article>
+
+                    <span class="recommendation-number">
+                        03
+                    </span>
+
+                    <h3>
+                        Monitorar mensalmente
+                    </h3>
+
+                    <p>
+                        Acompanhar os indicadores permite identificar
+                        mudanças de comportamento e oportunidades de economia.
+                    </p>
+
+                </article>
+
+            </div>
+
+        </section>
+
+        <footer>
+
+            <span>
+                EcoTrack
+            </span>
+
+            <span>
+                Projeto acadêmico demonstrativo
+            </span>
+
+        </footer>
+
+    </main>
+
+    <script type="module" src="app.js"></script>
+
+</body>
+
+</html>
