@@ -75,10 +75,35 @@ jobs:
       - name: Baixar codigo
         uses: actions/checkout@v7
 
+      - name: Preparar site de teste
+        run: |
+          SITE_DIR="${RUNNER_TEMP}/ecotrack-site"
+
+          mkdir -p "$SITE_DIR"
+          mkdir -p zap-reports
+
+          rsync -a \
+            --exclude='.git/' \
+            --exclude='.github/' \
+            --exclude='.zap/' \
+            --exclude='node_modules/' \
+            --exclude='tests/' \
+            --exclude='zap-reports/' \
+            --exclude='.env' \
+            --exclude='.env.*' \
+            ./ "$SITE_DIR/"
+
+          chmod 777 zap-reports
+
       - name: Iniciar servidor EcoTrack
         run: |
-          python3 -m http.server 8080 --bind 127.0.0.1 \
+          SITE_DIR="${RUNNER_TEMP}/ecotrack-site"
+
+          python3 -m http.server 8080 \
+            --bind 127.0.0.1 \
+            --directory "$SITE_DIR" \
             > /tmp/ecotrack-http.log 2>&1 &
+
           echo $! > /tmp/ecotrack-http.pid
 
           for attempt in $(seq 1 20); do
@@ -104,8 +129,8 @@ jobs:
               -c /zap/wrk/.zap/rules.tsv \
               -i \
               -I \
-              -r /zap/wrk/zap-report.html \
-              -J /zap/wrk/zap-report.json
+              -r /zap/wrk/zap-reports/zap-report.html \
+              -J /zap/wrk/zap-reports/zap-report.json
 
       - name: Publicar relatorios DAST
         if: always()
@@ -113,8 +138,8 @@ jobs:
         with:
           name: ecotrack-dast-reports
           path: |
-            zap-report.html
-            zap-report.json
+            zap-reports/zap-report.html
+            zap-reports/zap-report.json
           if-no-files-found: warn
           retention-days: 14
 
