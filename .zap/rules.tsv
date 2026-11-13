@@ -1,4 +1,4 @@
-﻿# Configuracao de regras do OWASP ZAP
+# Configuracao de regras do OWASP ZAP
 # FAIL reprova a pipeline quando o alerta e encontrado
 # WARN registra o alerta sem reprovar a pipeline
 40012	FAIL	(Cross Site Scripting - Reflected)
