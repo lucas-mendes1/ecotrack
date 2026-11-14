@@ -1,26 +1,26 @@
-name: EcoTrack CI
+﻿name: EcoTrack CI - Secure Pipeline
 
 on:
   push:
     branches:
-      - main
       - develop
+      - main
       - 'feature/**'
-      - 'release/**'
-      - 'hotfix/**'
-
   pull_request:
     branches:
-      - main
       - develop
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   validate:
     name: Validar projeto
     runs-on: ubuntu-latest
-
     steps:
-      - name: Baixar código
+      - name: Baixar codigo
         uses: actions/checkout@v7
 
       - name: Configurar Node.js
@@ -28,8 +28,121 @@ jobs:
         with:
           node-version: 24
 
-      - name: Verificar sintaxe
+      - name: Verificar sintaxe JavaScript
         run: npm run check
 
       - name: Executar testes
         run: npm test
+
+  sast:
+    name: SAST - Semgrep
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - name: Baixar codigo
+        uses: actions/checkout@v7
+
+      - name: Analisar codigo com Semgrep
+        run: |
+          docker run --rm \
+            -v "${GITHUB_WORKSPACE}:/src" \
+            -w /src \
+            semgrep/semgrep:latest \
+            semgrep scan \
+              --config p/javascript \
+              --config p/security-audit \
+              --severity ERROR \
+              --error \
+              --metrics=off \
+              --json \
+              --output semgrep-report.json \
+              app.js metrics.js
+
+      - name: Publicar relatorio SAST
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ecotrack-sast-report
+          path: semgrep-report.json
+          if-no-files-found: warn
+          retention-days: 14
+
+  dast:
+    name: DAST - OWASP ZAP
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - name: Baixar codigo
+        uses: actions/checkout@v7
+
+      - name: Preparar site de teste
+        run: |
+          SITE_DIR="${RUNNER_TEMP}/ecotrack-site"
+
+          mkdir -p "$SITE_DIR"
+          mkdir -p zap-reports
+
+          rsync -a \
+            --exclude='.git/' \
+            --exclude='.github/' \
+            --exclude='.zap/' \
+            --exclude='node_modules/' \
+            --exclude='tests/' \
+            --exclude='zap-reports/' \
+            --exclude='.env' \
+            --exclude='.env.*' \
+            ./ "$SITE_DIR/"
+
+          chmod 777 zap-reports
+
+      - name: Iniciar servidor EcoTrack
+        run: |
+          SITE_DIR="${RUNNER_TEMP}/ecotrack-site"
+
+          python3 -m http.server 8080 \
+            --bind 127.0.0.1 \
+            --directory "$SITE_DIR" \
+            > /tmp/ecotrack-http.log 2>&1 &
+
+          echo $! > /tmp/ecotrack-http.pid
+
+          for attempt in $(seq 1 20); do
+            if curl --fail --silent http://127.0.0.1:8080/ > /dev/null; then
+              echo "Servidor iniciado com sucesso."
+              exit 0
+            fi
+            sleep 1
+          done
+
+          cat /tmp/ecotrack-http.log
+          exit 1
+
+      - name: Executar DAST com OWASP ZAP
+        run: |
+          docker run --rm \
+            --network host \
+            -v "${GITHUB_WORKSPACE}:/zap/wrk/:rw" \
+            ghcr.io/zaproxy/zaproxy:stable \
+            zap-full-scan.py \
+              -t http://127.0.0.1:8080 \
+              -m 2 \
+              -c /zap/wrk/.zap/rules.tsv \
+              -i \
+              -I \
+              -r /zap/wrk/zap-reports/zap-report.html \
+              -J /zap/wrk/zap-reports/zap-report.json
+
+      - name: Publicar relatorios DAST
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ecotrack-dast-reports
+          path: |
+            zap-reports/zap-report.html
+            zap-reports/zap-report.json
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Exibir log em caso de falha
+        if: failure()
+        run: cat /tmp/ecotrack-http.log || true

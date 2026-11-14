@@ -1,0 +1,10 @@
+# Configuracao de regras do OWASP ZAP
+# FAIL reprova a pipeline quando o alerta e encontrado
+# WARN registra o alerta sem reprovar a pipeline
+40012	FAIL	(Cross Site Scripting - Reflected)
+40014	FAIL	(Cross Site Scripting - Persistent)
+40018	FAIL	(SQL Injection)
+90020	FAIL	(Remote OS Command Injection)
+10020	WARN	(X-Frame-Options Header)
+10021	WARN	(X-Content-Type-Options Header Missing)
+10038	WARN	(Content Security Policy Header Not Set)
