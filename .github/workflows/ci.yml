@@ -18,6 +18,7 @@ jobs:
   validate:
     name: Validar projeto
     runs-on: ubuntu-latest
+    needs : dast
 
     steps:
       - name: Baixar código
@@ -33,3 +34,36 @@ jobs:
 
       - name: Executar testes
         run: npm test
+
+  sast:
+    name: SAST - Semgrep
+    runs-on: ubuntu-latest
+    container:
+      image: semgrep/semgrep
+    steps:
+      - name: Baixar código
+        uses: actions/checkout@v4
+
+      - name: Analisar código
+        run: semgrep scan --config auto .
+
+    dast:
+    name: DAST - OWASP ZAP
+    runs-on: ubuntu-latest
+    needs: sast
+    steps:
+      - name: Baixar código
+        uses: actions/checkout@v4
+
+      - name: Iniciar site de teste
+        run: |
+          python3 -m http.server 8080 --directory . &
+          for i in {1..10}; do
+            curl -fsS http://localhost:8080/ && break
+            sleep 2
+          done
+
+      - name: Executar análise DAST
+        uses: zaproxy/action-baseline@v0.15.0
+        with:
+          target: 'http://localhost:8080'      
